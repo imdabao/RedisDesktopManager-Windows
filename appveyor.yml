@@ -111,21 +111,24 @@ build_script:
 - cd %SRC_DIR%
 - call "C:\\Program Files (x86)\\NSIS\\makensis.exe" /V1 /DVERSION=%RESP_VERSION%.0.0 ./build/windows/installer/installer.nsi
 - cd %APPVEYOR_BUILD_FOLDER%
-- 7z.exe a resp-%RESP_VERSION%.zip %SRC_DIR%/build/windows/installer/resp-%RESP_VERSION%.0.0.exe
+- 7z.exe a resp-%RESP_VERSION%-portable.zip %SRC_DIR%/build/windows/installer/resources/*
+- copy /y %SRC_DIR%\build\windows\installer\resp-%RESP_VERSION%.0.0.exe .\resp-%RESP_VERSION%.exe
 - 7z.exe a -xr"!*\.git\" resp-%RESP_VERSION%-src.zip  %SRC_DIR%/*
 
 artifacts:
-- path: resp-$(RESP_VERSION).zip
+- path: resp-$(RESP_VERSION)-portable.zip
+- path: resp-$(RESP_VERSION).exe
 - path: resp-$(RESP_VERSION)-src.zip
 
 deploy:
   release: $(RESP_VERSION)
-  description: "[Thank you RedisDesktopManager](https://github.com/uglide/RedisDesktopManager/releases/tag/$(RESP_VERSION))"
+  description: "[Thanks to RedisDesktopManager](https://github.com/uglide/RedisDesktopManager/releases/tag/$(RESP_VERSION))"
   provider: GitHub
   auth_token:
-    secure: e3sDWfihvmg2L+/Fi6VmT6ZBtcLTyKWSoCo0bjfiWBjv/wbR/VTSOqbuGJa4c4uB # your encrypted token from GitHub
-  artifact: resp-$(RESP_VERSION).zip,resp-$(RESP_VERSION)-src.zip   # upload all NuGet packages to release assets
+    secure: mphyuOQAUoiMbTA3Q4kq8dPcHk8Tz6vFkDxft/f80mj1ZIJYrhGi9s6mUVZRKY8X # your encrypted token from GitHub
+  artifact: resp-$(RESP_VERSION).exe,resp-$(RESP_VERSION)-portable.zip,resp-$(RESP_VERSION)-src.zip   # upload all NuGet packages to release assets
   draft: false
   prerelease: false
+  repository: imdabao/rdm
   on:
     branch: master                 # release from master branch only
